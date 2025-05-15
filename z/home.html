@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Home - E-Commerce Store</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- Hero Section -->
+    <div class="p-5 mb-4 bg-light rounded-3">
+        <div class="container-fluid py-5">
+            <h1 class="display-5 fw-bold">Welcome to E-Shop</h1>
+            <p class="col-md-8 fs-4">Browse our wide selection of products and find the best deals today.</p>
+            <a href="/products" class="btn btn-primary btn-lg">Shop Now</a>
+        </div>
+    </div>
+
+    <!-- Featured Products -->
+    <h2 class="mb-4">Featured Products</h2>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
+        <div class="col" th:each="product : ${featuredProducts}">
+            <div class="card h-100 product-card">
+                <!-- Favorite Icon - would need to be conditionally shown based on user login -->
+                <div class="favorite-icon">
+                    <i class="far fa-heart"></i>
+                </div>
+                <div class="product-img-container">
+                    <img th:if="${product.imageUrl}" th:src="@{'/files/' + ${product.imageUrl}}" class="card-img-top product-img" alt="Product Image">
+                    <img th:unless="${product.imageUrl}" src="/img/placeholder.jpg" class="card-img-top product-img" alt="Product Image">
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${product.name}">Product Name</h5>
+                    <p class="card-text text-muted" th:text="${#strings.abbreviate(product.description, 100)}">Product Description...</p>
+                    <p class="card-text fw-bold" th:text="${'$' + product.price}">$99.99</p>
+                    <div class="d-flex justify-content-between">
+                        <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-outline-primary">View</a>
+                        <button class="btn btn-primary"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categories Section -->
+    <h2 class="mb-4">Shop by Category</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+        <div class="col" th:each="category : ${categories}">
+            <div class="card h-100 text-center">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${category.name}">Category Name</h5>
+                    <p class="card-text" th:text="${category.description}">Category Description</p>
+                    <a th:href="@{/products(categoryId=${category.id})}" class="btn btn-outline-secondary">Browse Products</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

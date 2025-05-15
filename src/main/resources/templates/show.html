@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title th:text="${product.name}">Product Detail</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item"><a href="/products">Products</a></li>
+      <li class="breadcrumb-item active" aria-current="page" th:text="${product.name}">Product Name</li>
+    </ol>
+  </nav>
+
+  <div class="row">
+    <!-- Product Image -->
+    <div class="col-md-5 mb-4">
+      <div class="card">
+        <div class="card-body text-center">
+          <img th:if="${product.imageUrl}" th:src="@{'/files/' + ${product.imageUrl}}" class="img-fluid rounded" alt="Product Image">
+          <img th:unless="${product.imageUrl}" src="/img/placeholder.jpg" class="img-fluid rounded" alt="Product Image">
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Details -->
+    <div class="col-md-7">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start">
+            <h1 class="card-title" th:text="${product.name}">Product Name</h1>
+
+            <!-- Favorite Button (needs to be conditional based on login status) -->
+            <div>
+              <form action="#" method="post">
+                <button type="submit" class="btn btn-outline-danger">
+                  <i class="far fa-heart"></i> Add to Favorites
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <h3 class="text-primary mb-4" th:text="${'$' + product.price}">$99.99</h3>
+
+          <div class="mb-4">
+            <p class="mb-1"><strong>Category:</strong> <span th:text="${product.category?.name}">Category Name</span></p>
+            <p class="mb-1"><strong>Stock:</strong> <span th:text="${product.stock}">10</span></p>
+          </div>
+
+          <div class="mb-4">
+            <h5>Description</h5>
+            <p th:text="${product.description}">Product description goes here...</p>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="d-grid gap-2 d-md-flex">
+            <button class="btn btn-primary btn-lg">
+              <i class="fas fa-shopping-cart"></i> Add to Cart
+            </button>
+            <a th:href="@{/products/edit/{id}(id=${product.id})}" class="btn btn-outline-secondary btn-lg">
+              <i class="fas fa-edit"></i> Edit
+            </a>
+            <form th:action="@{/products/delete/{id}(id=${product.id})}" method="post" class="d-inline">
+              <button type="submit" class="btn btn-outline-danger btn-lg"
+                      onclick="return confirm('Are you sure you want to delete this product?')">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

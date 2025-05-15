@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title th:text="${user.username + '\'s Favorites'}">User Favorites</title>
+</head>
+<body>
+<div layout:fragment="content">
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item"><a href="/users">Users</a></li>
+      <li class="breadcrumb-item"><a th:href="@{/users/{id}(id=${user.id})}" th:text="${user.username}">Username</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Favorites</li>
+    </ol>
+  </nav>
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 th:text="${user.username + '\'s Favorite Products'}">User's Favorite Products</h1>
+    <a th:href="@{/users/{id}(id=${user.id})}" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left"></i> Back to Profile
+    </a>
+  </div>
+
+  <!-- Favorites Grid -->
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+    <div class="col" th:each="product : ${favorites}">
+      <div class="card h-100 product-card">
+        <div class="position-absolute top-0 end-0 p-2">
+          <form th:action="@{/users/{userId}/removeFavorite/{productId}(userId=${user.id},productId=${product.id})}" method="post">
+            <button type="submit" class="btn btn-sm btn-danger">
+              <i class="fas fa-heart-broken"></i> Remove
+            </button>
+          </form>
+        </div>
+        <div class="product-img-container">
+          <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" class="card-img-top product-img" alt="Product Image">
+          <img th:unless="${product.imageUrl}" src="/img/placeholder.jpg" class="card-img-top product-img" alt="Product Image">
+        </div>
+        <div class="card-body">
+          <h5 class="card-title" th:text="${product.name}">Product Name</h5>
+          <p class="card-text text-muted" th:text="${#strings.abbreviate(product.description, 100)}">Product Description...</p>
+          <p class="card-text fw-bold" th:text="${'$' + product.price}">$99.99</p>
+          <div class="d-grid">
+            <a th:href="@{/products/{id}(id=${product.id})}" class="btn btn-outline-primary">View Details</a>
+          </div>
+        </div>
+        <div class="card-footer">
+          <small class="text-muted" th:text="${'Category: ' + product.category?.name}">Category: Electronics</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div th:if="${#lists.isEmpty(favorites)}" class="text-center my-5">
+    <i class="far fa-heart fa-4x text-muted mb-3"></i>
+    <h3>No favorite products yet</h3>
+    <p>Browse products and add some to your favorites.</p>
+    <a href="/products" class="btn btn-primary">Browse Products</a>
+  </div>
+</div>
+</body>
+</html>
